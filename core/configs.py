@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     )
 
     # URLs dos microserviços
-    LOGIN_SERVICE_URL: str = 'http://localhost:8001'  # Ajuste para a URL correta do seu microserviço de login
+    LOGIN_SERVICE_URL: str = 'http://localhost:8001'  # URL do microserviço de login
 
     DBBaseModel: ClassVar = (
         declarative_base()

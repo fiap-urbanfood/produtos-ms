@@ -4,7 +4,7 @@ from jose import JWTError, jwt
 from pydantic import BaseModel
 
 # Configurações do JWT
-SECRET_KEY = "sua_chave_secreta_muito_segura"  # Em produção, use variáveis de ambiente
+SECRET_KEY = "asBop3YPd4kNkLvbf_hkxjbFhnIqGmx_phMYOH2RBjM"  # Em produção, use variáveis de ambiente
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
