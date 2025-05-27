@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: app-produtos
+  name: deployment-produtos
+  namespace: urbanfood
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: app-produtos
+  minReadySeconds: 60
+  strategy:
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1
+    type: RollingUpdate      
+  template:
+    metadata:
+      labels:
+        app: app-produtos
+    spec:
+      containers:
+        - name: app-produtos
+          image: 857378965163.dkr.ecr.us-east-1.amazonaws.com/urbanfood/produtos:latest
+          ports:
+            - containerPort: 8003
+          envFrom:
+            - configMapRef:
+                name: configmap-produtos
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8003
+            periodSeconds: 30
+            timeoutSeconds: 15
+            failureThreshold: 3
+            initialDelaySeconds: 60
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8003
+            periodSeconds: 30
+            timeoutSeconds: 15
+            failureThreshold: 5
+            initialDelaySeconds: 30
+          resources:
+            requests:
+              cpu: 100m
+              memory: 300Mi
+            limits:
+              cpu: 200m
+              memory: 512Mi
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+

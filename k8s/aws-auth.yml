@@ -1,0 +1,28 @@
+apiVersion: v1
+data:
+  mapRoles: |
+    - rolearn: arn:aws:iam::857378965163:role/github-actions
+      username: github-actions
+      groups:
+       - system:bootstrappers
+       - system:nodes
+       - system:masters
+    - groups:
+      - system:bootstrappers
+      - system:nodes
+      rolearn: arn:aws:iam::857378965163:role/node-group-1-eks-node-group-20250323141453873000000003
+      username: system:node:{{EC2PrivateDNSName}}
+    - groups:
+      - system:bootstrappers
+      - system:nodes
+      rolearn: arn:aws:iam::857378965163:role/node-group-2-eks-node-group-20250323141453872700000002
+      username: system:node:{{EC2PrivateDNSName}}
+  mapUsers: |
+    - userarn: arn:aws:iam::857378965163:user/github-actions
+      username: github-actions
+      groups:
+        - system:masters
+kind: ConfigMap
+metadata:
+  name: aws-auth
+  namespace: kube-system
