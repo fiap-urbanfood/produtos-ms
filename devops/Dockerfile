@@ -8,10 +8,6 @@ ENV HOME /home/"$USER"
 ENV LANG C.UTF-8
 ENV PYTHONUNBUFFERED 1
 
-# Criar o PATH do app
-RUN mkdir /deploy
-RUN mkdir /deploy/logs && chmod +w /deploy/logs
-
 # Install prerequisites
 RUN apk update && apk upgrade
 RUN apk add curl \
@@ -53,24 +49,13 @@ WORKDIR $HOME/app
 RUN mkdir -p $HOME/app/log
 
 # Copia os arquivos do projeto
-COPY --chown="$USER:$USER" --chmod=750 *.py $HOME/app
-COPY --chown="$USER:$USER" --chmod=750 pytest.ini $HOME/app
-COPY --chown="$USER:$USER" --chmod=750 requirements.txt $HOME/app
-
-# Copia os diretorios do projeto
-COPY --chown="$USER:$USER" --chmod=755 api  $HOME/app
-COPY --chown="$USER:$USER" --chmod=755 core $HOME/app
-COPY --chown="$USER:$USER" --chmod=755 tests $HOME/app
-COPY --chown="$USER:$USER" --chmod=755 models  $HOME/app
-COPY --chown="$USER:$USER" --chmod=755 schemas $HOME/app
+COPY --chown="$USER:$USER" --chmod=700 . $HOME/app
 
 # Upgrade pip
 RUN pip3 install --upgrade pip --user
 
 # Instala as dependencias
 RUN pip3 install -r requirements.txt
-
-RUN chmod -R 750 ./main.py
 
 # Sobe o backend
 EXPOSE 8003
