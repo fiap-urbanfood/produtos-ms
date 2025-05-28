@@ -27,15 +27,16 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
       - name: Install Dependencies
         run: |
               python -m pip install --upgrade pip --user
               pip install -r requirements.txt
-  
       - name: Run pytest
         run: pytest
   
@@ -86,6 +87,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Automatic Tagging of Releases
+        id: increment-git-tag
+        run: |
+          bash ./devops/git_update.sh -v patch
+
       - name: Config AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -97,7 +103,10 @@ jobs:
         run: aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region $AWS_REGION
 
       - name: Deploy to APP EKS
+        env:
+          IMAGE_RELEASE: ${{ steps.increment-git-tag.outputs.git-tag }}      
         run: |
+          echo "Deploy Version: $IMAGE_RELEASE"
           kubectl apply -f k8s/namespace.yml
           kubectl apply -f k8s/app/urbanfood-service.yaml
           kubectl apply -f k8s/app/urbanfood-configmap.yaml
