@@ -21,6 +21,25 @@ permissions:
     attestations: write
 
 jobs:
+  python-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Python Version
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+
+      - name: Install Python dependencies
+        run: |
+              python3 -m pip install --upgrade pip --user
+              python3 -m pip install -r requirements.txt
+
+      - name: Run Python Test
+        run: python3 tests/conftest.py
+
   build:
     name: Build APP
     runs-on: ubuntu-latest
