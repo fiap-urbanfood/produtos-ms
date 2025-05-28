@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from models.produtos_models import ProdutosModel
-from schemas.produtos_schemas import ProdutosSchema
+from schemas.produtos_schemas import ProdutosSchema, ProdutosCreate, ProdutosUpdate
 from core.deps import get_session
 
 
@@ -19,11 +19,16 @@ router = APIRouter()
 
 # POST produtos
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=ProdutosSchema)
-async def post_produtos(produtos: ProdutosSchema, db: AsyncSession = Depends(get_session)):
-    novo_produto = ProdutosModel(nome=produtos.nome, categoria=produtos.categoria, preço_unitario=produtos.preço_unitario)
+async def post_produtos(produtos: ProdutosCreate, db: AsyncSession = Depends(get_session)):
+    novo_produto = ProdutosModel(
+        nome=produtos.nome,
+        categoria=produtos.categoria,
+        preço_unitario=produtos.preço_unitario
+    )
 
     db.add(novo_produto)
     await db.commit()
+    await db.refresh(novo_produto)
 
     return novo_produto
 
@@ -56,7 +61,7 @@ async def get_produto(produto_id: int, db: AsyncSession = Depends(get_session)):
 
 # PUT produto
 @router.put('/{produto_id}', response_model=ProdutosSchema, status_code=status.HTTP_202_ACCEPTED)
-async def put_produto(produto_id: int, produto: ProdutosSchema, db: AsyncSession = Depends(get_session)):
+async def put_produto(produto_id: int, produto: ProdutosUpdate, db: AsyncSession = Depends(get_session)):
     async with db as session:
         query = select(ProdutosModel).filter(ProdutosModel.id == produto_id)
         result = await session.execute(query)
@@ -68,6 +73,7 @@ async def put_produto(produto_id: int, produto: ProdutosSchema, db: AsyncSession
             produto_up.preço_unitario = produto.preço_unitario
 
             await session.commit()
+            await session.refresh(produto_up)
 
             return produto_up
         else:

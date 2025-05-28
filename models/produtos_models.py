@@ -1,11 +1,11 @@
-from core.configs import settings
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Float
+from models.base_model import Base
 
 
-class ProdutosModel(settings.DBBaseModel):
-     __tablename__= 'produtos'
+class ProdutosModel(Base):
+    __tablename__ = 'produtos'
 
-     id = Column(Integer, primary_key=True, autoincrement=True)
-     nome = Column(String(256), nullable=True)
-     categoria = Column(String(256), nullable=True)
-     preço_unitario = Column(Integer, nullable=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    nome = Column(String(256), nullable=False)
+    categoria = Column(String(256), nullable=False)
+    preço_unitario = Column(Float, nullable=False)
