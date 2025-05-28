@@ -17,7 +17,8 @@ class Settings(BaseSettings):
     )
 
     # URLs dos microserviços
-    LOGIN_SERVICE_URL: str = 'http://localhost:8001'  # URL do microserviço de login
+    #LOGIN_SERVICE_URL: str = 'http://localhost:8001'
+    LOGIN_SERVICE_URL: str = 'http://a290354dd0cfd40cbb428316c51cd3ea-2025820054.us-east-1.elb.amazonaws.com:8001'  # URL do microserviço de login
 
     DBBaseModel: ClassVar = (
         declarative_base()
