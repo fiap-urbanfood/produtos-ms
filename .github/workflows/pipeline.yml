@@ -2,13 +2,12 @@
 name: Deploy App
 
 on:
-  workflow_dispatch:
-    inputs:
-      action:
-        description: 'Deploy Application - Produtos'
-        type: choice
-        options:
-        - deploy_app
+  push:
+    branches:
+      - main
+  pull_request:
+    types:
+      - closed
 
 env:
   AWS_REGION: ${{ vars.AWS_REGION }}
